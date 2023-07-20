@@ -7,14 +7,21 @@ import ru.tn.testSVG.beans.RedirectSB;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.inject.Named;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Контроллер jsf страницы
  */
 @ManagedBean
 @ViewScoped
+@Named("MnemonicC")
+
 public class MnemonicC {
+
+    private static final Logger LOG = Logger.getLogger(MnemonicC.class.getName());
 
     private String objectId, svgName, objectName;
 
@@ -30,7 +37,7 @@ public class MnemonicC {
      * Инициализация загрузки мнемосхемы
      */
     public void initLoad() {
-        System.out.println("load object: " + objectId);
+        LOG.log(Level.INFO,"load object: " + objectId);
         if (Objects.isNull(objectId)) {
             svgName = "/svg/error.svg";
         } else {
@@ -50,7 +57,7 @@ public class MnemonicC {
                 }
             }
         }
-        System.out.println("mnemonic file for object: " + objectId + " is " + svgName);
+        LOG.log(Level.INFO,"mnemonic file for object: " + objectId + " is " + svgName);
     }
 
     /**
@@ -58,7 +65,7 @@ public class MnemonicC {
      * Загружается из js кода по нажатию на элемент svg
      */
     public void jsCall() {
-        System.out.println("hello from svg for object " + objectId);
+        LOG.log(Level.INFO,"hello from svg for object " + objectId);
         hello = "Hello from svg!";
     }
 

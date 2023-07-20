@@ -20,24 +20,21 @@ import java.util.List;
 @Stateless(name = "LoadMDataBean")
 public class LoadMDataBean implements InMDataBeanLocal {
 
-    @Resource(name = "OracleDataSource", mappedName = "jdbc/OracleDataSource")
+    @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     @EJB
     private ParseMDataBean bean;
 
-    private static final String SQL = "select * from table(mnemo.get_mnemo_hist_data(?))";
-    private static final String NLS_SQL = "alter session set NLS_NUMERIC_CHARACTERS='.,'";
+    private static final String SQL = "select * from mnemo.get_mnemo_hist_data(?)";
 
     @Override
-    public List<MnemonicData> getData(String object) {
+    public List<MnemonicData> getData(String object, String login) {
         List<MnemonicData> result = new ArrayList<>();
         try(Connection connect = ds.getConnection();
-                PreparedStatement stmNls = connect.prepareStatement(NLS_SQL);
-                PreparedStatement stm = connect.prepareStatement(SQL)) {
-            stmNls.executeQuery();
+            PreparedStatement stm = connect.prepareStatement(SQL)) {
 
-            stm.setString(1, object);
+            stm.setLong(1, Long.parseLong(object));
             ResultSet res = stm.executeQuery();
 
             bean.parseData(result, res);
@@ -45,5 +42,10 @@ public class LoadMDataBean implements InMDataBeanLocal {
             e.printStackTrace();
         }
         return result;
+    }
+
+    @Override
+    public String getUser(String sessionID) {
+        return null;
     }
 }

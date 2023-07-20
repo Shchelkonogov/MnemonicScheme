@@ -13,7 +13,7 @@ import java.time.format.DateTimeFormatter;
 @Stateless
 public class RedirectSB {
 
-    private static final String SQL = "select mnemo_ip, mnemo_port from dz_sys_param";
+    private static final String SQL = "select mnemo_ip, mnemo_port from admin.dz_sys_param";
 
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;

@@ -16,5 +16,14 @@ public interface InMDataBeanLocal {
      * @param object объект по которому грузятся данные
      * @return коллекция с данными
      */
-    List<MnemonicData> getData(String object);
+
+    List<MnemonicData> getData(String object, String login);
+
+
+    /**
+     * Метод возвращает имя пользователя
+     * @param sessionID объект по которому получаем имя пользователя из базы
+     * @return login
+     */
+    String getUser(String sessionID);
 }

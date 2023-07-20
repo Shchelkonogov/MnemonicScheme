@@ -19,9 +19,9 @@ import java.sql.SQLException;
 @WebServlet(name = "LoadSvgServlet", urlPatterns = "/svg/*")
 public class LoadSvgServlet extends HttpServlet {
 
-    private static final String SQL = "select mnemo from dev_mnemo_type where kind = ?";
+    private static final String SQL = "select mnemo from admin.dev_mnemo_type where kind = ?";
 
-    @Resource(name = "OracleDataSource", mappedName = "jdbc/OracleDataSource")
+    @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     @Override
