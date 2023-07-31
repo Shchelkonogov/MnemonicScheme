@@ -10,6 +10,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Stateless бин для загрузки мгновенных данных объекта
@@ -17,34 +19,54 @@ import java.util.Objects;
  */
 @Stateless(name = "LoadMInstantDataBean")
 public class LoadMInstantDataBean implements InMDataBeanLocal {
+    private static final Logger LOG = Logger.getLogger(LoadMInstantDataBean.class.getName());
 
-    private static final String GET_MUID_SQL = "{? = call mnemo.set_mnemo_async_request(?)}";
-    private static final String GET_STATUS_SQL = "select mnemo.get_mnemo_async_status(?) from dual";
-    private static final String GET_DATA_SQL = "select * from table (mnemo.get_mnemo_async_data(?))";
-    private static final String NLS_SQL = "alter session set NLS_NUMERIC_CHARACTERS='.,'";
 
-    @Resource(name = "OracleDataSource", mappedName = "jdbc/OracleDataSource")
+    private static final String GET_MUID_SQL = "select * from mnemo.set_mnemo_async_request(?, ?)";
+    private static final String GET_STATUS_SQL = "select mnemo.get_mnemo_async_status(?)";
+    private static final String GET_DATA_SQL = "select * from mnemo.get_mnemo_async_data(?)";
+    private static final String GET_LOGIN = "select td_adm.get_active_session_login(?)";
+
+
+    @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     @EJB
     private ParseMDataBean bean;
 
     @Override
-    public List<MnemonicData> getData(String object) {
+    public String getUser(String sessionID) {
+        try (Connection connection = ds.getConnection();
+             PreparedStatement stm = connection.prepareStatement(GET_LOGIN)) {
+            stm.setString(1, sessionID);
+
+            ResultSet res = stm.executeQuery();
+            if (res.next()  && (res.getString(1) != null)) {
+                return res.getString(1);
+            }
+        } catch (SQLException e) {
+            LOG.log(Level.WARNING, "check session error: ", e);
+        }
+        return null;
+    }
+    @Override
+    public List<MnemonicData> getData(String object, String login) {
         List<MnemonicData> result = new ArrayList<>();
         String muid = null;
+
         try(Connection connect = ds.getConnection();
                 CallableStatement stm = connect.prepareCall(GET_MUID_SQL)) {
-            stm.setString(2, object);
-            stm.registerOutParameter(1, Types.VARCHAR);
-            stm.execute();
+            stm.setLong(1, Long.parseLong(object));
+            stm.setString(2, login);
 
-            muid = stm.getString(1);
+            ResultSet res = stm.executeQuery();
+            res.next();
+            muid = res.getString(1);
         } catch(SQLException e) {
             e.printStackTrace();
         }
 
-        System.out.println("LoadMInstantDataBean.getData muid: " + muid + " for object: " + object + " load instant data");
+        LOG.log(Level.INFO,"LoadMInstantDataBean.getData muid: " + muid + " for object: " + object + " load instant data");
         for (int i = 0; i < 10; i++) {
             try {
                 Thread.sleep(6000);
@@ -52,13 +74,11 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
                 e.printStackTrace();
             }
 
-            System.out.println("LoadMInstantDataBean.getData waiting: " + ((i + 1) * 6000) + " ms for object: " + object);
+            LOG.log(Level.INFO, "LoadMInstantDataBean.getData waiting: " + ((i + 1) * 6000) + " ms for object: " + object);
 
             try(Connection connect = ds.getConnection();
                     PreparedStatement stmGetStatus = connect.prepareStatement(GET_STATUS_SQL);
-                    PreparedStatement stmGetData = connect.prepareStatement(GET_DATA_SQL);
-                    PreparedStatement stmNls = connect.prepareStatement(NLS_SQL)) {
-                stmNls.executeQuery();
+                    PreparedStatement stmGetData = connect.prepareStatement(GET_DATA_SQL)) {
 
                 stmGetStatus.setString(1, muid);
 
@@ -74,10 +94,10 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
                             result.add(new MnemonicData("time", null, "Невозможно получить данные с объекта", null));
                         }
 
-                        System.out.println("LoadMInstantDataBean.getData data load for object: " + object);
+                        LOG.log(Level.INFO,"LoadMInstantDataBean.getData data load for object: " + object);
                         return result;
                     } else {
-                        System.out.println("LoadMInstantDataBean.getData waiting data for object: " + object);
+                        LOG.log(Level.INFO,"LoadMInstantDataBean.getData waiting data for object: " + object);
                     }
                 }
             } catch(SQLException e) {
@@ -87,7 +107,7 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
         if(result.isEmpty()) {
             result.add(new MnemonicData("time", null, "Превышено время ожидания данных", null));
         }
-        System.out.println("LoadMInstantDataBean.getData no data load for object: " + object);
+        LOG.log(Level.WARNING,"LoadMInstantDataBean.getData no data load for object: " + object);
         return result;
     }
 }

@@ -15,10 +15,10 @@ import java.sql.SQLException;
 @Stateless
 public class LoadSvgBean {
 
-    private static final String SQL = "select mnemo.get_mnemo_type(?) from dual";
-    private static final String SQL_GET_NAME = "select obj_name from obj_object where obj_id = ?";
+    private static final String SQL = "select mnemo.get_mnemo_type(?)";
+    private static final String SQL_GET_NAME = "select obj_name from admin.obj_object where obj_id = (?)";
 
-    @Resource(name = "OracleDataSource", mappedName = "jdbc/OracleDataSource")
+    @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     /**
@@ -48,7 +48,7 @@ public class LoadSvgBean {
     private String getData(String object, String sql) {
         try(Connection connect = ds.getConnection();
             PreparedStatement stm = connect.prepareStatement(sql)) {
-            stm.setString(1, object);
+            stm.setLong(1, Long.parseLong(object));
 
             ResultSet res = stm.executeQuery();
             if(res.next()) {
