@@ -25,10 +25,6 @@ class ServletLoadDoPostMethod {
         try {
             Integer.parseInt(objId);
             String login = bean.getUser(sessionID);
-            if (login == null) {
-                login = "ADMIN";
-                LOG.log(Level.WARNING, "Out of input login. Login set to Admin");
-            }
             List<MnemonicData> mData = bean.getData(objId, login);
             ObjectMapper mapper = new ObjectMapper();
             LOG.log(Level.INFO, mapper.writeValueAsString(mData));
