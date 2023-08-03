@@ -25,7 +25,6 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
     private static final String GET_MUID_SQL = "select * from mnemo.set_mnemo_async_request(?, ?)";
     private static final String GET_STATUS_SQL = "select mnemo.get_mnemo_async_status(?)";
     private static final String GET_DATA_SQL = "select * from mnemo.get_mnemo_async_data(?)";
-    private static final String GET_LOGIN = "select td_adm.get_active_session_login(?)";
 
 
     @Resource(name = "jdbc/DataSource")
@@ -34,21 +33,7 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
     @EJB
     private ParseMDataBean bean;
 
-    @Override
-    public String getUser(String sessionID) {
-        try (Connection connection = ds.getConnection();
-             PreparedStatement stm = connection.prepareStatement(GET_LOGIN)) {
-            stm.setString(1, sessionID);
 
-            ResultSet res = stm.executeQuery();
-            if (res.next()  && (res.getString(1) != null)) {
-                return res.getString(1);
-            }
-        } catch (SQLException e) {
-            LOG.log(Level.WARNING, "check session error: ", e);
-        }
-        return null;
-    }
     @Override
     public List<MnemonicData> getData(String object, String login) {
         List<MnemonicData> result = new ArrayList<>();

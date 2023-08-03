@@ -43,9 +43,4 @@ public class LoadMDataBean implements InMDataBeanLocal {
         }
         return result;
     }
-
-    @Override
-    public String getUser(String sessionID) {
-        return null;
-    }
 }

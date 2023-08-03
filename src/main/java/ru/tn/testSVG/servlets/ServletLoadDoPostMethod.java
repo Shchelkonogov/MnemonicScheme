@@ -18,14 +18,12 @@ class ServletLoadDoPostMethod {
     private static final Logger LOG = Logger.getLogger(ServletLoadDoPostMethod.class.getName());
 
 
-    static void doPost(HttpServletRequest req, HttpServletResponse resp, InMDataBeanLocal bean) throws IOException {
+    static void doPost(HttpServletRequest req, HttpServletResponse resp, InMDataBeanLocal bean, String loginFromServlet) throws IOException {
         String objId = req.getParameter("objId");
-        String sessionID = req.getParameter("sessionID");
 
         try {
             Integer.parseInt(objId);
-            String login = bean.getUser(sessionID);
-            List<MnemonicData> mData = bean.getData(objId, login);
+            List<MnemonicData> mData = bean.getData(objId, loginFromServlet);
             ObjectMapper mapper = new ObjectMapper();
             LOG.log(Level.INFO, mapper.writeValueAsString(mData));
 

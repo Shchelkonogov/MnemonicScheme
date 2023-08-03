@@ -1,6 +1,7 @@
 package ru.tn.testSVG.controller;
 
 import org.primefaces.PrimeFaces;
+import ru.tn.testSVG.beans.CheckUserSB;
 import ru.tn.testSVG.beans.LoadSvgBean;
 import ru.tn.testSVG.beans.RedirectSB;
 
@@ -23,7 +24,7 @@ public class MnemonicC {
 
     private static final Logger LOG = Logger.getLogger(MnemonicC.class.getName());
 
-    private String objectId, svgName, objectName;
+    private String objectId, svgName, objectName, sessionId, login;
 
     @EJB
     private LoadSvgBean bean;
@@ -31,16 +32,25 @@ public class MnemonicC {
     @EJB
     private RedirectSB redirectBean;
 
+    @EJB
+    private CheckUserSB checkUserSB;
+
     private String hello;
 
     /**
      * Инициализация загрузки мнемосхемы
      */
     public void initLoad() {
+        System.out.println("initLoad objectId "+ objectId);
+        System.out.println("init session ID " + sessionId);
         LOG.log(Level.INFO,"load object: " + objectId);
-        if (Objects.isNull(objectId)) {
+        if (Objects.isNull(objectId) || Objects.isNull(sessionId)) {
             svgName = "/svg/error.svg";
         } else {
+            login = checkUserSB.getUser(sessionId);
+            if (login == null) {
+                svgName = "/svg/error.svg";
+            }
             if (objectId.equals("testNewFitch")) {
                 svgName = "/img/testNewFitch.svg?v1";
             } else {
@@ -103,5 +113,13 @@ public class MnemonicC {
 
     public void setHello(String hello) {
         this.hello = hello;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 }

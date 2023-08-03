@@ -1,5 +1,6 @@
 package ru.tn.testSVG.servlets;
 
+import ru.tn.testSVG.beans.CheckUserSB;
 import ru.tn.testSVG.beans.InMDataBeanLocal;
 
 import javax.ejb.EJB;
@@ -20,8 +21,12 @@ public class LoadMDataServlet extends HttpServlet {
     @EJB(beanName = "LoadMDataBean")
     private InMDataBeanLocal bean;
 
+    @EJB
+    private CheckUserSB checkUserSB;
+
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        ServletLoadDoPostMethod.doPost(req, resp, bean);
+        String login = checkUserSB.getUser(req.getParameter("sessionID"));
+        ServletLoadDoPostMethod.doPost(req, resp, bean, login);
     }
 }

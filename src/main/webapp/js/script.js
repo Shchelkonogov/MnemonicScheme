@@ -181,14 +181,15 @@ function loadData(url, timer) {
 
     // Не работает в старых версиях chrome(44)
     var urlParams = new URLSearchParams(location.search);
-    var objectId = {
-        "objId" : urlParams.get("objectId")
+    var objectAndSessionId = {
+        "objId" : urlParams.get("objectId"),
+        "sessionID" : urlParams.get("sessionID")
     };
 
     jQuery.ajax({
         url: url,
         method: "post",
-        data: objectId,
+        data: objectAndSessionId,
         error: [
             function(message) {
                 console.log(message.responseText);
