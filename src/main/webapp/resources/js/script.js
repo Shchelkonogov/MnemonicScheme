@@ -183,7 +183,7 @@ function loadData(url, timer) {
     var urlParams = new URLSearchParams(location.search);
     var objectAndSessionId = {
         "objId" : urlParams.get("objectId"),
-        "sessionID" : urlParams.get("sessionID")
+        "sessionId" : urlParams.get("sessionId")
     };
 
     jQuery.ajax({

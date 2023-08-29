@@ -8,15 +8,15 @@
       xmlns:p="http://primefaces.org/ui">
 <f:metadata>
     <f:viewParam name="objectId" value="#{mnemonicC.objectId}"/>
-    <f:viewParam name="sessionID" value="#{mnemonicC.sessionId}"/>
+    <f:viewParam name="sessionId" value="#{mnemonicC.sessionId}"/>
     <f:viewAction action="#{mnemonicC.initLoad}"/>
 </f:metadata>
 <h:head>
     <meta content="UTF-8"/>
     <title>Мнемосхема#{mnemonicC.objectName}</title>
-    <script type="application/javascript" src="js/script.js?v6"></script>
+    <h:outputScript library="js" name="script.js?#{mnemonicAppController.version}"/>
 <!--    <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>-->
-    <script type="application/javascript" src="js/svg-pan-zoom.local.js"></script>
+    <h:outputScript library="js" name="svg-pan-zoom.local.js"/>
 <!--    <script type="application/javascript" src="https://unpkg.com/@ungap/url-search-params"></script>-->
     <h:outputScript library="js" name="URLSearchParams_polyfill.local.js"/>
 
