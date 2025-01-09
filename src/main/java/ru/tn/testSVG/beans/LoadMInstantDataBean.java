@@ -1,10 +1,10 @@
 package ru.tn.testSVG.beans;
 
+import jakarta.annotation.Resource;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 import ru.tn.testSVG.model.MnemonicData;
 
-import javax.annotation.Resource;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -19,20 +19,18 @@ import java.util.logging.Logger;
  */
 @Stateless(name = "LoadMInstantDataBean")
 public class LoadMInstantDataBean implements InMDataBeanLocal {
-    private static final Logger LOG = Logger.getLogger(LoadMInstantDataBean.class.getName());
 
+    private static final Logger LOG = Logger.getLogger(LoadMInstantDataBean.class.getName());
 
     private static final String GET_MUID_SQL = "select * from mnemo.set_mnemo_async_request(?, ?)";
     private static final String GET_STATUS_SQL = "select mnemo.get_mnemo_async_status(?)";
     private static final String GET_DATA_SQL = "select * from mnemo.get_mnemo_async_data(?)";
-
 
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
     @EJB
     private ParseMDataBean bean;
-
 
     @Override
     public List<MnemonicData> getData(String object, String login) {
@@ -48,7 +46,7 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
             res.next();
             muid = res.getString(1);
         } catch(SQLException e) {
-            e.printStackTrace();
+            LOG.log(Level.WARNING, "Error get muid for instant data", e);
         }
 
         LOG.log(Level.INFO,"LoadMInstantDataBean.getData muid: " + muid + " for object: " + object + " load instant data");
@@ -56,7 +54,7 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
             try {
                 Thread.sleep(6000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                LOG.log(Level.WARNING, "Error thread wait for instant data", e);
             }
 
             LOG.log(Level.INFO, "LoadMInstantDataBean.getData waiting: " + ((i + 1) * 6000) + " ms for object: " + object);
@@ -86,7 +84,7 @@ public class LoadMInstantDataBean implements InMDataBeanLocal {
                     }
                 }
             } catch(SQLException e) {
-                e.printStackTrace();
+                LOG.log(Level.WARNING, "Error load instant data", e);
             }
         }
         if(result.isEmpty()) {

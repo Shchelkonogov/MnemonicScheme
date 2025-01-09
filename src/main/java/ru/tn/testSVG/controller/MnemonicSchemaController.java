@@ -1,7 +1,9 @@
 package ru.tn.testSVG.controller;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
+
+import java.io.Serializable;
 
 /**
  * @author Maksim Shchelkonogov
@@ -9,7 +11,7 @@ import javax.inject.Named;
  */
 @Named("mnemonicAppController")
 @ApplicationScoped
-public class MnemonicSchemaController {
+public class MnemonicSchemaController implements Serializable {
 
     private static final String VERSION = "1";
 

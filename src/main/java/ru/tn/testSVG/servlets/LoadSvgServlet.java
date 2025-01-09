@@ -1,13 +1,15 @@
 package ru.tn.testSVG.servlets;
 
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Resource;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,7 +28,12 @@ public class LoadSvgServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String mnemonicName = req.getPathInfo().substring(1);
+        String mnemonicName;
+        if (req.isSecure()) {
+            mnemonicName = new String(req.getPathInfo().substring(1).getBytes(StandardCharsets.ISO_8859_1));
+        } else {
+            mnemonicName = req.getPathInfo().substring(1);
+        }
 
         try(Connection connect = ds.getConnection();
                 PreparedStatement stm = connect.prepareStatement(SQL)) {

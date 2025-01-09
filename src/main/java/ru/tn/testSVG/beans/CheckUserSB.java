@@ -1,8 +1,9 @@
 package ru.tn.testSVG.beans;
 
-import javax.annotation.Resource;
-import javax.ejb.Startup;
-import javax.ejb.Stateless;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Startup;
+import jakarta.ejb.Stateless;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +23,6 @@ public class CheckUserSB {
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
-
     public String getUser(String sessionID) {
         try (Connection connection = ds.getConnection();
              PreparedStatement stm = connection.prepareStatement(CHECK_SESSION)) {
@@ -37,5 +37,4 @@ public class CheckUserSB {
         }
         return null;
     }
-
 }

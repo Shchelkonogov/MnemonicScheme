@@ -1,8 +1,8 @@
 package ru.tn.testSVG.beans;
 
+import jakarta.ejb.Stateless;
 import ru.tn.testSVG.model.MnemonicData;
 
-import javax.ejb.Stateless;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;

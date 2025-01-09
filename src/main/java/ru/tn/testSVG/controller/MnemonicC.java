@@ -1,14 +1,16 @@
 package ru.tn.testSVG.controller;
 
+import jakarta.ejb.EJB;
+import jakarta.faces.view.ViewScoped;
+import jakarta.inject.Named;
 import org.primefaces.PrimeFaces;
 import ru.tn.testSVG.beans.CheckUserSB;
 import ru.tn.testSVG.beans.LoadSvgBean;
 import ru.tn.testSVG.beans.RedirectSB;
 
-import javax.ejb.EJB;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Named;
+import java.io.Serializable;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,11 +18,9 @@ import java.util.logging.Logger;
 /**
  * Контроллер jsf страницы
  */
-@ManagedBean
+@Named("mnemonicC")
 @ViewScoped
-@Named("MnemonicC")
-
-public class MnemonicC {
+public class MnemonicC implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(MnemonicC.class.getName());
 
@@ -63,7 +63,7 @@ public class MnemonicC {
                 if (Objects.isNull(fileName)) {
                     svgName = "/svg/error.svg";
                 } else {
-                    svgName = "/svg/" + fileName;
+                    svgName = "/svg/" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
                 }
             }
         }

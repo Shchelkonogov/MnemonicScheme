@@ -1,12 +1,15 @@
 package ru.tn.testSVG.beans;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
+import jakarta.annotation.Resource;
+import jakarta.ejb.Stateless;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Stateless бин который выгружает имя мнемосхемы
@@ -14,6 +17,8 @@ import java.sql.SQLException;
  */
 @Stateless
 public class LoadSvgBean {
+
+    private static final Logger logger = Logger.getLogger(LoadSvgBean.class.getName());
 
     private static final String SQL = "select mnemo.get_mnemo_type(?)";
     private static final String SQL_GET_NAME = "select obj_name from admin.obj_object where obj_id = (?)";
@@ -55,7 +60,7 @@ public class LoadSvgBean {
                 return res.getString(1);
             }
         } catch(SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, "Error load data", e);
         }
         return null;
     }
