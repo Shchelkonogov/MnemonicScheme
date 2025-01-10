@@ -23,14 +23,15 @@ public class RedirectSB {
     @Resource(name = "jdbc/DataSource")
     private DataSource ds;
 
-    public String getRedirectUrl(String object) {
+    public String getRedirectUrl(String object, String sessionId) {
         try (Connection connect = ds.getConnection();
              PreparedStatement stm = connect.prepareStatement(SQL)) {
             ResultSet res = stm.executeQuery();
             if (res.next()) {
                 return res.getString(1)
                         .replace("[object]", object)
-                        .replace("[date]", LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")));
+                        .replace("[date]", LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                        .replace("[sessionId]", sessionId);
             }
         } catch (SQLException e) {
             logger.log(Level.WARNING, "Error load redirect url", e);

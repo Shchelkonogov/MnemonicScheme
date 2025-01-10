@@ -80,7 +80,7 @@ public class MnemonicC implements Serializable {
     }
 
     public void redirect() {
-        PrimeFaces.current().executeScript("window.open('" + redirectBean.getRedirectUrl(objectId) + "', '_blank')");
+        PrimeFaces.current().executeScript("window.open('" + redirectBean.getRedirectUrl(objectId, sessionId) + "', '_blank')");
     }
 
     public String getObjectId() {
