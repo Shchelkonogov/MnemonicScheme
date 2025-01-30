@@ -11,6 +11,8 @@ import ru.tn.testSVG.beans.RedirectSB;
 import java.io.Serializable;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,8 +81,22 @@ public class MnemonicC implements Serializable {
         hello = "Hello from svg!";
     }
 
-    public void redirect() {
-        PrimeFaces.current().executeScript("window.open('" + redirectBean.getRedirectUrl(objectId, sessionId) + "', '_blank')");
+    public void redirect(String name) {
+        String url;
+        switch (name) {
+            case "mnemo":
+                url = redirectBean.getRedirectUrl("dNet")
+                        .replace("[object]", objectId)
+                        .replace("[date]", LocalDate.now().minusDays(1).format(DateTimeFormatter.ofPattern("dd-MM-yyyy")))
+                        .replace("[sessionId]", sessionId);
+                PrimeFaces.current().executeScript("window.open('" + url + "'), '_blank'");
+                break;
+            case "eod":
+                url = redirectBean.getRedirectUrl("eod_moek")
+                        .replace("[muid]", redirectBean.getMuid(objectId));
+                PrimeFaces.current().executeScript("window.open('" + url + "'), '_blank'");
+                break;
+        }
     }
 
     public String getObjectId() {

@@ -138,13 +138,6 @@ function addRedirectButton(elementId, svgDom) {
     redirect.setAttribute('class', 'svg-pan-zoom-control');
     redirect.setAttribute('transform', 'translate(' + (width - 5) + ' ' + 50 + ') scale(0.4)');
 
-    var iframeID = document.getElementById('dataForm:iframeID').value;
-    if (iframeID === "") {
-        redirect.setAttribute('onclick', 'top.redirectJSF()');
-    } else {
-        redirect.setAttribute('onclick', 'top.document.getElementById(\'test\').contentWindow.redirectJSF()');
-    }
-
     var redirectPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     redirectPath.setAttribute("d", "M69.05,58.1c-4.8,0-9.1,2.3-11.8,5.8l-24.3-14.1c1.5-3.7,1.5-7.8,0-11.5l24.3-14.1c2.7,3.5,7,5.8,11.8,5.8" +
         "c8.3,0,15-6.7,15-15s-6.7-15-15-15s-15,6.7-15,15c0,2,0.4,4,1.1,5.7l-24.3,14.2c-2.8-3.5-7-5.8-11.8-5.8c-8.3,0-15,6.7-15,15" +
@@ -161,9 +154,17 @@ function addRedirectButton(elementId, svgDom) {
 
     redirect.appendChild(redirectPath);
 
-    var redirectTitle = document.createElementNS('http://www.w3.org/2000/svg', 'title');
-    redirectTitle.appendChild(document.createTextNode('Мнемосхема сети'));
-    redirect.appendChild(redirectTitle);
+    redirect.addEventListener('mouseover', function(e) {
+        console.log('mouse over redirect');
+        $(PrimeFaces.escapeClientId('mnemoForm:context')).css({
+            top: e.pageY+'px',
+            left: (e.pageX - 240) +'px'
+        }).show();
+    });
+
+    top.document.getElementById('mnemoForm:context').addEventListener('mouseleave', function(e) {
+        $(PrimeFaces.escapeClientId('mnemoForm:context')).hide();
+    });
 
     svgContent.appendChild(redirect);
 }

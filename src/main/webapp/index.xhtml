@@ -32,9 +32,8 @@
     </style>
 </h:head>
 <h:body>
-    <h:form>
+    <h:form id="mnemoForm">
         <p:remoteCommand name="jsCall" action="#{mnemonicC.jsCall}" oncomplete="PF('dlg').show();" update="results"/>
-        <p:remoteCommand name="redirectJSF" action="#{mnemonicC.redirect}"/>
         <div id="container">
             <object data="#{request.contextPath}#{mnemonicC.svgName}" type="image/svg+xml" id="svgDocument" style="width: 100%; height: 100%"/>
         </div>
@@ -43,6 +42,11 @@
                 <h:outputText value="#{mnemonicC.hello}"/>
             </p:dialog>
         </h:panelGroup>
+
+        <p:contextMenu id="context" style="width: 240px;">
+            <p:menuitem value="Мнемосхема сети" action="#{mnemonicC.redirect('mnemo')}" icon="pi pi-external-link"/>
+            <p:menuitem value="Единое окно диспетчера" action="#{mnemonicC.redirect('eod')}" icon="pi pi-external-link"/>
+        </p:contextMenu>
     </h:form>
     <h:form id="dataForm">
         <h:inputHidden id="iframeID" value="#{request.getParameter('iframeID')}"/>
